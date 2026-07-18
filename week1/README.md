@@ -15,3 +15,9 @@ To evaluate their capabilities, I translated the same Chinese BBC news article u
 
 Additionally, I configured API keys using a `.env` file, connected to Ollama through `localhost:11434`, and gained a better understanding of the differences between cloud-hosted and locally deployed LLMs.
 
+# Day 3
+On Day 3, I built a company brochure generator, extending the scrape → LLM pipeline from Day 1 into a multi-step, multi-page workflow. Given a company name and its website, the tool scrapes the homepage, uses an LLM to decide which of the site's links are actually relevant (About, Careers, Product pages, etc.), scrapes those pages too, and combines everything into a short markdown brochure — useful for prospective customers, investors, or recruits.
+I reused my existing `scrape_article` scraper and `Settings` class from Day 1, and added two new modules: `link_selector.py`, which asks Groq's **llama-3.3-70b-versatile** model to filter a page's raw links down to the relevant ones and return them as structured JSON, and `brochure.py`, which chains the scraping and link-selection steps together and writes the final brochure. This pipeline runs entirely on Groq's free-tier model rather than a paid OpenAI model, and inherits the more robust fallback scraping (Selenium → trafilatura → BeautifulSoup) built in Day 1.
+I generated a brochure for **NVIDIA** as the test case, and also added a streaming variant so the brochure renders live, typewriter-style, in the notebook.
+
+
