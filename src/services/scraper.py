@@ -1,5 +1,5 @@
 """
-Downloading and extracting article content from webpages.
+Downloading and extracting article content and links from webpages.
 """
 
 from bs4 import BeautifulSoup
@@ -15,6 +15,17 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 "
+        "(Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 "
+        "(KHTML, like Gecko) "
+        "Chrome/137.0.0.0 Safari/537.36"
+    )
+}
+
+
 def scrape_article(url: str) -> str:
     """
     Download a webpage and extract its readable text.
@@ -26,21 +37,11 @@ def scrape_article(url: str) -> str:
         Clean article text.
     """
 
-    headers = {
-        "User-Agent": (
-            "Mozilla/5.0 "
-            "(Windows NT 10.0; Win64; x64) "
-            "AppleWebKit/537.36 "
-            "(KHTML, like Gecko) "
-            "Chrome/137.0.0.0 Safari/537.36"
-        )
-    }
-
     response = None
     try:
         response = requests.get(
             url,
-            headers=headers,
+            headers=HEADERS,
             timeout=30,
         )
         response.raise_for_status()
@@ -116,3 +117,20 @@ def scrape_article(url: str) -> str:
             return article
 
     raise RuntimeError(f"Failed to fetch article: {response_error}")
+
+
+def fetch_links(url: str) -> list[str]:
+    """
+    Return all hyperlinks found on a webpage.
+
+    Args:
+        url: URL of the page to inspect.
+
+    Returns:
+        List of raw href values found on the page (may include relative links).
+    """
+    response = requests.get(url, headers=HEADERS, timeout=30)
+    response.raise_for_status()
+    soup = BeautifulSoup(response.text, "lxml")
+    links = [link.get("href") for link in soup.find_all("a")]
+    return [link for link in links if link]
