@@ -12,7 +12,7 @@ I compared zero-shot vs few-shot prompting on a single task, using Groq's free-t
 
 I hit a couple of snags along the way - a Gradio version mismatch around the `type="messages"` argument, and a 400 error from Groq caused by an extra `metadata` field in Gradio's history dicts - both fixed by cleaning the history down to just `role` and `content`. Once running, the difference was clear: zero-shot occasionally drifted off the "no AWS, no hardware" rules or forgot the Azure discount, while few-shot stayed on-message every time.
 
-# Day 3 (Week 3)
+# Day 3 (Week 2)
 
 I built a hotel booking agent using tool calling backed by a real SQLite database, instead of letting the model guess at hotel names or prices. I set up a `hotels.db` with a `hotels` table (name, city, category, price, rating, amenities) seeded across budget/reasonable/luxurious tiers in a few cities, plus a `bookings` table to record reservations.
 
